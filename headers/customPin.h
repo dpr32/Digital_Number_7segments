@@ -16,12 +16,12 @@
 #define P1_5    BIT5
 #define P1_6    BIT6
 #define P1_7    BIT7
-#define P2_0
-#define P2_1
-#define P2_2
-#define P2_3
-#define P2_4
-#define P2_5
+#define P2_0    BIT0
+#define P2_1    BIT1
+#define P2_2    BIT2
+#define P2_3    BIT3
+#define P2_4    BIT4
+#define P2_5    BIT5
 
 
 
