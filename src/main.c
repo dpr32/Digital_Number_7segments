@@ -1,26 +1,36 @@
 #include <msp430.h> 
-#include "customPin.h"
+
 #include "numbers.h"
+#include "customPin.h"
+#include "constants.h"
 
-typedef void (*funcPtr)(void);
-
-funcPtr funcArray[10] = {display_0, display_1, display_2, display_3, display_4, display_5, display_6, display_7, display_8, display_9};
+unsigned int i = 0;
+unsigned int timerCount = 0;
 
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-
 	P1DIR |= 0xFF;              // set all pins as outputs
 
-	int i;
+	CCTL0 = CCIE;               // CCR0 interrupt enabled
+	TACTL = TASSEL_2 + MC_2;    // set the timer A to SMCLCK, Continuous
+
+	__bis_SR_register(LPM0_bits + GIE);     // Enter LPM0 w/ interrupt
+
     while(1)
+    {}
+}
+
+// Timer A0 interrupt service routine
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void Timer_A (void)
+{
+    timerCount = (timerCount + 1) % SECOND;
+
+    if(timerCount == 0)
     {
-        for(i = 0; i < 10; ++i)
-        {
-            funcArray[i]();             // call number display
-            __delay_cycles(1000000);    // delay for 1 sec
-        }
+      funcArray[i]();
+      i = (i + 1) % 10;
     }
 
-	return 0;
 }
